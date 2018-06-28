@@ -1,0 +1,193 @@
+#!/bin/bash 
+
+#CREATED BY NOAH LITTLE
+#FOLLOW ON TWITTER @noahacks
+
+VER="v1.3"
+LINE="$(eval printf %.1s '-{1..'"${COLUMNS:-$(tput cols)}"\}; echo)"
+
+#COLOURS
+
+RED='\033[0;31m'
+NC='\033[0m'
+BR='\033[0;33m'
+GR='\033[0;32m'
+LGR='\033[1;32m'
+LRED='\033[1;31m'
+CY='\033[0;36m'
+
+#TAGS
+
+DBAS=${CY}[**]${NC}
+INFO=${BR}[!]${NC}
+ERROR=${RED}[*${LRED}*${RED}]${NC}
+LOAD=${GR}[*]${NC}
+PROG1="[    ]"
+PROG2="[${GR}>${NC}   ]"
+PROG3="[${GR}=>${NC}  ]"
+PROG4="[${GR}==>${NC} ]"
+PROG5="[${GR}===>${NC}]"
+PROG6="[${GR}DONE${NC}]"
+ENTER="[${CY}>${NC}]"
+
+showLoading() {
+  mypid=$!
+  Analyzing=$1
+
+  echo -ne "$Analyzing\r"
+
+  while kill -0 $mypid 2>/dev/null; do
+    echo -ne "${LOAD} $Analyzing ${PROG1}\r"
+    sleep 0.1
+    echo -ne "${LOAD} $Analyzing ${PROG2}\r"
+    sleep 0.1
+    echo -ne "${LOAD} $Analyzing ${PROG3}\r"
+    sleep 0.1
+    echo -ne "${LOAD} $Analyzing ${PROG4}\r"
+    sleep 0.1
+    echo -ne "${LOAD} $Analyzing ${PROG5}\r"
+    sleep 0.1
+    echo -ne "\r\033[K"
+    echo -ne "${LOAD} $Analyzing ${PROG6}\r"
+  done
+
+  echo -e "${LOAD} $Analyzing ${PROG6}"
+}
+
+mkdirectory(){
+
+	mkdir /var/msf3/ &> /dev/null
+
+}
+
+cddir(){
+
+	cd /var/msf3/
+
+}
+
+download(){
+
+	wget https://www.dropbox.com/s/78b09mvnxxr10d5/framework-4.2.0.tar.bz2?dl=0 -O framework.tar.bz2 --no-check-certificate
+
+}
+
+extract(){
+
+	tar -xvjf framework.tar.bz2
+
+}
+
+executable(){
+
+	if [ -f /usr/bin/msfconsole ]; then
+
+	rm /usr/bin/msfconsole
+
+	else
+
+	echo "cd /var/msf3/msf/ && ./msfconsole" >> /usr/bin/msfconsole
+
+	fi
+}
+
+perms(){
+
+	chmod +x /usr/bin/msfconsole
+
+}
+
+clean(){
+
+	rm -rf "/var/msf3/framework.tar.bz2"
+
+}
+
+clear
+echo -e "${DBAS} Loading Metasploit Installer ${GR}${VER}${NC}"
+sleep 2
+if [[ $EUID -ne 0 ]]; then
+
+	clear
+	echo -e "${ERROR} Metasploit Installer requires root privileges, please use ${RED}sudo ${0}${NC} Or login as root!"
+	exit 1
+
+fi
+
+#MENU
+
+showMenu(){
+clear
+		echo -e "$LINE"
+		echo -e "${CY}
+                        __ _           _   
+                       / _(_)         | |  
+         _ __ ___  ___| |_ _ _ __  ___| |_ 
+        | '_ ' _ \/ __|  _| | '_ \/ __| __|
+        | | | | | \__ \ | | | | | \__ \ |_ 
+        |_| |_| |_|___/_| |_|_| |_|___/\__|${NC}"
+        echo ""
+		echo -e "$LINE"
+		echo ""
+		echo -e "${BR}[1]${NC} Install Metasploit"
+		echo ""
+		echo -e "${BR}[9]${NC} About"
+		echo -e "${BR}[0]${NC} Exit"
+		echo -e "$LINE"
+		echo ""
+		echo -ne "${ENTER} Option: "
+		read -p "" mc
+return $mc
+}
+
+while [[ "$m" != "0" ]]
+do
+    if [[ "$m" == "1" ]]; then
+
+	clear
+
+	echo -e "${DBAS} Preparing Filesystem"
+
+	sleep 2
+
+	mkdirectory & showLoading "Creating Directories"
+
+	cddir & showLoading "Changing Directory"
+
+	download & showLoading "Downloading Data"
+
+	extract & showLoading "Extracting Data"
+
+	executable & showLoading "Creating Executables"
+
+	perms & showLoading "Patching Permissions"
+
+	clean & showLoading "Cleaning Up"
+
+	clear
+
+	echo -e "${INFO} Completed."
+	echo -e "${INFO} Run the command ${GR}msfconsole${NC} to start Metasploit."
+	echo ""
+	echo -e -n "${ENTER} Press <Enter> to continue"
+	read
+
+elif [[ "$m" == "9" ]]; then
+
+	clear
+
+	echo -e "${INFO} Metasploit Installer ${LGR}${VER}${NC}"
+	echo -e "${INFO} Homepage: ${CY}https://noahlittle.github.com${NC}"
+	echo -e "${INFO} Contact: Twitter ${CY}@noahacks${NC}"
+	echo -e "${INFO} Author: ${CY}Noah Little${NC}"
+	echo ""
+	echo -e -n "${ENTER} Press <Enter> to continue"
+	read
+
+fi
+    showMenu
+    m=$?
+
+done
+clear
+exit 0;

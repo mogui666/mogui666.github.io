@@ -1,0 +1,339 @@
+#!/bin/bash 
+
+#CREATED BY NOAH LITTLE
+#FOLLOW ON TWITTER @noahacks
+
+VER="v2.6"
+ARCH="$(uname -p)"
+LINE="$(eval printf %.1s '-{1..'"${COLUMNS:-$(tput cols)}"\}; echo)"
+
+#COLOURS
+
+RED='\033[0;31m'
+NC='\033[0m'
+BR='\033[0;33m'
+GR='\033[0;32m'
+LGR='\033[1;32m'
+LRED='\033[1;31m'
+CY='\033[0;36m'
+
+#TAGS
+
+DBAS=${CY}[**]${NC}
+INFO=${BR}[!]${NC}
+ERROR=${RED}[*${LRED}*${RED}]${NC}
+LOAD=${GR}[*]${NC}
+PROG1="[    ]"
+PROG2="[${GR}>${NC}   ]"
+PROG3="[${GR}=>${NC}  ]"
+PROG4="[${GR}==>${NC} ]"
+PROG5="[${GR}===>${NC}]"
+PROG6="[${GR}DONE${NC}]"
+ENTER="[${CY}>${NC}]"
+
+showLoading() {
+  mypid=$!
+  Analyzing=$1
+
+  echo -ne "$Analyzing\r"
+
+  while kill -0 $mypid 2>/dev/null; do
+    echo -ne "${LOAD} $Analyzing ${PROG1}\r"
+    sleep 0.1
+    echo -ne "${LOAD} $Analyzing ${PROG2}\r"
+    sleep 0.1
+    echo -ne "${LOAD} $Analyzing ${PROG3}\r"
+    sleep 0.1
+    echo -ne "${LOAD} $Analyzing ${PROG4}\r"
+    sleep 0.1
+    echo -ne "${LOAD} $Analyzing ${PROG5}\r"
+    sleep 0.1
+    echo -ne "\r\033[K"
+    echo -ne "${LOAD} $Analyzing ${PROG6}\r"
+  done
+
+  echo -e "${LOAD} $Analyzing ${PROG6}"
+}
+
+
+showLoading() {
+  mypid=$!
+  Analyzing=$1
+
+  echo -ne "$Analyzing\r"
+
+  while kill -0 $mypid 2>/dev/null; do
+    echo -ne "${LOAD} $Analyzing ${PROG1}\r"
+    sleep 0.1
+    echo -ne "${LOAD} $Analyzing ${PROG2}\r"
+    sleep 0.1
+    echo -ne "${LOAD} $Analyzing ${PROG3}\r"
+    sleep 0.1
+    echo -ne "${LOAD} $Analyzing ${PROG4}\r"
+    sleep 0.1
+    echo -ne "${LOAD} $Analyzing ${PROG5}\r"
+    sleep 0.1
+    echo -ne "\r\033[K"
+    echo -ne "${LOAD} $Analyzing ${PROG6}\r"
+  done
+
+  echo -e "${LOAD} $Analyzing ${PROG6}"
+}
+
+
+clear
+echo -e "${DBAS} Loading iCTRL ${GR}${VER}${NC}"
+
+if [[ $ARCH = "arm64" ]]
+	then
+
+	sleep 1
+	echo -e "${ERROR}${RED} ARM64 DETECTED, FUNCTIONS LIMITED!${NC}"
+	sleep 3
+
+else
+
+	sleep 2
+
+fi
+
+
+
+#####CHECKS#####
+
+if [[ $EUID -ne 0 ]]; then
+
+	clear
+	echo -e "${ERROR} iCTRL requires root privileges, please use ${RED}sudo ${0}${NC} Or login as root!"
+	exit 1
+
+fi
+if [ ! -f /usr/bin/python2.7 ]; then
+	
+	clear
+	echo -e "${ERROR} Python 2.7.x Required."
+	exit 1
+
+fi
+if [ ! -f /usr/bin/pirni ]; then
+
+	clear
+	echo -e "${ERROR} Pirni Required."
+	exit 1
+
+fi
+
+
+
+#####METHODS#####
+
+checks(){
+
+	if [ ! -d /var/mobile/Downloads/ ]; then
+	mkdir /var/mobile/Downloads/ &> /dev/null
+	fi
+
+	if [ -f /var/mobile/Downloads/setuptools-0.6c11-py2.7.egg* ]; then
+	rm /var/mobile/Downloads/setuptools-0.6c11-py2.7.egg* &> /dev/null
+	fi
+
+}
+
+dlsut(){
+
+	wget https://pypi.python.org/packages/25/5d/cc55d39ac39383dd6e04ae80501b9af3cc455be64740ad68a4e12ec81b00/setuptools-0.6c11-py2.7.egg#md5=fe1f997bc722265116870bc7919059ea -O /var/mobile/Downloads/setuptools-0.6c11-py2.7.egg --no-check-certificate &> /dev/null
+
+}
+
+instsut(){
+
+	sh /var/mobile/Downloads/setuptools-0.6c11-py2.7.egg &> /dev/null
+
+}
+
+instmodules(){
+
+	easy_install mechanize &> /dev/null
+	easy_install html2text &> /dev/null
+	easy_install BeautifulSoup &> /dev/null
+	easy_install requests==2.8.1 &> /dev/null
+
+}
+
+clean(){
+
+	rm /var/mobile/Downloads/setuptools* &> /dev/null
+
+}
+
+cupp(){
+
+	clear
+	/bin/bash /var/mobile/pentest/exploits/iCTRL/ca
+
+}
+
+embomb(){
+
+	clear
+	python /var/mobile/pentest/exploits/iCTRL/email_bomb.py
+
+}
+
+pirni(){
+
+	clear
+	/bin/bash /var/mobile/pentest/exploits/iCTRL/da
+
+}
+
+roku(){
+
+	clear
+	python /var/mobile/pentest/exploits/iCTRL/roku.py
+
+}
+
+IOSPLOIT(){
+
+	clear
+	cd /var/mobile/pentest/exploits/iCTRL/IOSPLOIT
+	python IOSPLOIT.py
+
+}
+
+pwnista(){
+
+	clear
+	python /var/mobile/pentest/exploits/iCTRL/pwnista.py
+
+}
+
+thc(){
+
+	clear
+	/bin/bash /var/mobile/pentest/exploits/iCTRL/ha
+
+}
+
+
+#MENU
+
+showMenu(){
+clear
+		echo -e "$LINE"
+		echo -e "${LGR}
+                _ ________________  __ 
+               (_) ____/_  __/ __ \/ / 
+              / / /     / / / /_/ / /  
+             / / /___  / / / _, _/ /___
+            /_/\____/ /_/ /_/ |_/_____/
+                           
+${NC}"
+		echo -e "$LINE"
+		echo -e "${BR}[1]${NC} CUPP"
+		echo -e "${BR}[2]${NC} Email Bomber"
+		echo -e "${BR}[3]${NC} Pirni & Derv"
+		echo -e "${BR}[4]${NC} Control Roku Device"
+		echo -e "${BR}[5]${NC} PwnISTA"
+		echo -e "${BR}[6]${NC} THC-Hydra Automation"
+		echo -e "$LINE"
+		echo -e "${BR}[99]${NC} Get Patches ${GR}[ESSENTIAL]${NC}"
+		echo -e "${BR}[88]${NC} About"
+		echo -e "${BR}[0]${NC}  Exit"
+		echo -e "$LINE"
+		echo ""
+		echo -ne "${ENTER} Option: "
+		read -p "" mc
+
+return $mc
+}
+
+while [[ "$m" != "0" ]]
+do
+    if [[ "$m" == "1" ]]; then
+
+	clear
+	echo -e "${DBAS} Loading CUPP"
+	sleep 1
+    cupp
+
+elif [[ "$m" == "2" ]]; then
+
+	clear
+	echo -e "${DBAS} Loading Email Bomber"
+	sleep 1
+	embomb
+
+elif [[ "$m" == "3" ]]; then
+
+	clear
+	echo -e "${DBAS} Loading Pirni & Derv"
+	sleep 1
+    pirni
+
+elif [[ "$m" == "4" ]]; then
+
+	clear
+	echo -e "${DBAS} Loading Roku Device Controller"
+	sleep 1
+    roku
+
+elif [[ "$m" == "5" ]]; then
+
+	clear
+	echo -e "${DBAS} Loading PwnISTA"
+	sleep 1
+	pwnista
+
+elif [[ "$m" == "6" ]]; then
+
+	clear
+	echo -e "${DBAS} Loading THC-Hydra Automation"
+	sleep 1
+	thc
+
+elif [[ "$m" == "99" ]]; then
+
+	clear
+
+	echo -e "${DBAS} Starting Patcher"
+
+	sleep 1
+
+    checks & showLoading "Running System Checks"
+
+	dlsut & showLoading "Downloading Setup Tools"
+	
+	instsut & showLoading "Installing Setup Tools"
+
+	instmodules & showLoading "Installing Modules"
+
+	clean & showLoading "Cleaning Up"
+
+	clear
+	echo -e "${DBAS} Patcher Completed!"
+	echo ""
+	echo -e -n "${ENTER} Press <Enter> to continue"
+	read
+
+
+
+elif [[ "$m" == "88" ]]; then
+	clear
+	echo -e "${INFO} iCTRL ${LGR}${VER}${NC}"
+	echo -e "${INFO} Homepage: ${CY}https://noahlittle.github.com${NC}"
+	echo -e "${INFO} Contact: Twitter ${CY}@noahacks${NC}"
+	echo -e "${INFO} Author: ${CY}Noah Little${NC}"
+	echo ""
+	echo -e -n "${ENTER} Press <Enter> to continue"
+	read
+
+
+fi
+    showMenu
+    m=$?
+
+done
+clear
+exit 0;

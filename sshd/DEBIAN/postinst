@@ -1,0 +1,20 @@
+#!/bin/bash
+
+echo "Fixing Permissions..."
+cd "/Applications/sshd.app/"
+
+# process origin binary
+mv sshd sshd_
+chown root:wheel sshd_
+chmod +s sshd_
+
+cont=`cat <<"EOF"
+#!/bin/bash
+dir=$(dirname "$0")
+exec "${dir}"/sshd_ "$@"
+EOF
+`
+# create new fake binary
+echo -e "$cont" > sshd
+chown root:wheel  sshd
+chmod +x sshd

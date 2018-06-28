@@ -1,0 +1,10 @@
+Package: com.noah.sshd
+Name: sshd
+Depends: 
+Architecture: iphoneos-arm
+Description: enable and disable sshd daemon.
+Maintainer: mogui666 <njl02@outlook.com>
+Author: mogui666 <njl02@outlook.com>
+Section: Utilities
+Version: 1.0
+Installed-Size: 216

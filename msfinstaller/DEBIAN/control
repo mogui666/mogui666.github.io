@@ -1,0 +1,10 @@
+Package: com.noahlit.msfinstaller
+Name: Metasploit Installer
+Depends: bigbosshackertools, zlib, iconv, ruby
+Version: 1.3
+Architecture: iphoneos-arm
+Description: A CLI Tool, with an aim to install Metasploit Framework Easily. Run this command to start: "msfinstaller"
+Depiction: https://mogui666.github.io/depic/msfinst
+Maintainer: mogui666 <njl02@outlook.com>
+Author: mogui666 <njl02@outlook.com>
+Section: Security

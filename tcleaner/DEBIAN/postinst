@@ -1,0 +1,17 @@
+#!/bin/bash
+
+echo "[*] Starting TCLEANER助手"
+sleep 1
+
+echo "[**] Applying Patches"
+sleep 1
+
+chmod +x /usr/bin/tcleaner
+
+echo "[*] TCLEANER Patches Applied"
+
+echo "[*] Thank you for installing TCLEANER"
+
+echo "[*] Follow me on Twitter @noahacks"
+
+exit 0;

@@ -1,0 +1,25 @@
+#!/bin/bash
+
+echo "[*] Starting iCTRL助手"
+sleep 1
+
+echo "[**] Applying Patches"
+sleep 1
+
+chmod +x /usr/bin/iCTRL
+chmod +x /var/mobile/pentest/exploits/iCTRL/ca
+chmod +x /var/mobile/pentest/exploits/iCTRL/ha
+chmod +x /var/mobile/pentest/exploits/iCTRL/da
+chmod +x /var/mobile/pentest/exploits/iCTRL/derv/b4.sh
+chmod +x /var/mobile/pentest/exploits/iCTRL/derv/derv.sh
+chmod +x /var/mobile/pentest/exploits/iCTRL/derv/derv-cookie.sh
+chmod +x /var/mobile/pentest/exploits/iCTRL/derv/derv-pw.sh
+chmod +x /var/mobile/pentest/exploits/iCTRL/derv/derv-url.sh
+
+echo "[*] iCTRL Patches Applied"
+
+echo "[*] Thank you for installing iCTRL"
+
+echo "[*] Follow me on Twitter @noahacks"
+
+exit 0;

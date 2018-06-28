@@ -1,0 +1,594 @@
+#!/bin/bash
+
+#CREATED BY NOAH LITTLE
+#FOLLOW ON TWITTER @noahacks
+
+#modifying this could put your device at risk!
+
+VER="v1.3.3"
+SECVER="v1.0"
+ARCH="$(uname -p)"
+iOS="$(sw_vers | grep ProductVersion: | awk '{print $2}')"
+LINE="$(eval printf %.1s '-{1..'"${COLUMNS:-$(tput cols)}"\}; echo)"
+
+#COLOURS
+
+RED='\033[0;31m'
+NC='\033[0m'
+BR='\033[0;33m'
+GR='\033[0;32m'
+LGR='\033[1;32m'
+LRED='\033[1;31m'
+CY='\033[0;36m'
+
+#TAGS
+
+DBAS=${CY}[**]${NC}
+INFO=${BR}[!]${NC}
+ERROR=${RED}[*${LRED}*${RED}]${NC}
+LOAD=${GR}[*]${NC}
+PROG1="[    ]"
+PROG2="[${GR}>${NC}   ]"
+PROG3="[${GR}=>${NC}  ]"
+PROG4="[${GR}==>${NC} ]"
+PROG5="[${GR}===>${NC}]"
+PROG6="[${GR}DONE${NC}]"
+ENTER="[${CY}>${NC}]"
+
+showLoading() {
+  mypid=$!
+  Analyzing=$1
+
+  echo -ne "$Analyzing\r"
+
+  while kill -0 $mypid 2>/dev/null; do
+    echo -ne "${LOAD} $Analyzing ${PROG1}\r"
+    sleep 0.1
+    echo -ne "${LOAD} $Analyzing ${PROG2}\r"
+    sleep 0.1
+    echo -ne "${LOAD} $Analyzing ${PROG3}\r"
+    sleep 0.1
+    echo -ne "${LOAD} $Analyzing ${PROG4}\r"
+    sleep 0.1
+    echo -ne "${LOAD} $Analyzing ${PROG5}\r"
+    sleep 0.1
+    echo -ne "\r\033[K"
+    echo -ne "${LOAD} $Analyzing ${PROG6}\r"
+  done
+
+  echo -e "${LOAD} $Analyzing ${PROG6}"
+}
+
+
+fileSizes() {
+
+		#SAFARI CHUNK
+		if [ -d "/var/mobile/Containers/Data/Application/" ]; then
+		SAFLOC="$(find /var/mobile/Containers/Data/Application/ -name "Safari" -ls | cut -d/ -f 7)"
+		else
+		SAFLOC=0
+		fi
+
+		if [ -d "/var/mobile/Containers/Data/Application/${SAFLOC}/Library/Safari/Thumbnails/" ]; then
+		SAFARITHUMBNAILSIZE="$(echo `find /var/mobile/Containers/Data/Application/${SAFLOC}/Library/Safari/Thumbnails/ -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+		else
+		SAFARITHUMBNAILSIZE=0
+		fi
+		
+		if [ -d "/var/mobile/Containers/Data/Application/${SAFLOC}/Library/Caches/" ]; then
+		SAFARICACHESIZE="$(echo `find /var/mobile/Containers/Data/Application/${SAFLOC}/Library/Caches/ -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+		else
+		SAFARICACHESIZE=0
+		fi
+
+		if [ -f "/var/mobile/Containers/Data/Application/${SAFLOC}/Library/Safari/History.db-wal" ]; then
+		SAFARIHISTORY1="$(stat --printf="%s" /var/mobile/Containers/Data/Application/${SAFLOC}/Library/Safari/History.db-wal)"
+		else
+		SAFARIHISTORY1=0
+		fi
+
+		if [ -f "/var/mobile/Containers/Data/Application/${SAFLOC}/Library/Safari/History.db" ]; then
+		SAFARIHISTORY2="$(stat --printf="%s" /var/mobile/Containers/Data/Application/${SAFLOC}/Library/Safari/History.db)"
+		else
+		SAFARIHISTORY2=0
+		fi
+
+		if [ -f "/var/mobile/Containers/Data/Application/${SAFLOC}/Library/Safari/History.db-shm" ]; then
+		SAFARIHISTORY3="$(stat --printf="%s" /var/mobile/Containers/Data/Application/${SAFLOC}/Library/Safari/History.db-shm)"
+		else
+		SAFARIHISTORY3=0
+		fi
+		
+		if [ -f "/var/mobile/Containers/Data/Application/${SAFLOC}/Library/Safari/SuspendState.plist" ]; then
+		SAFARIHISTORY4="$(stat --printf="%s" /var/mobile/Containers/Data/Application/${SAFLOC}/Library/Safari/SuspendState.plist)"
+		else
+		SAFARIHISTORY4=0
+		fi
+
+		if [ -d "/var/tmp/" ]; then
+		TMPSIZE="$(echo `find /var/tmp/ -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+		else
+		TMPSIZE=0
+		fi
+		
+		if [ -d "/var/mobile/Media/Downloads/" ]; then
+		DOWNLOADSIZE="$(echo `find /var/mobile/Media/Downloads/ -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+		else
+		DOWNLOADSIZE=0
+		fi
+		
+		if [ -d "/var/logs/" ]; then
+		LOGSSIZE="$(echo `find /var/logs/ -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+		else
+		LOGSSIZE=0
+		fi
+		
+		if [ -d "/var/log/" ]; then
+		LOGSSIZE2="$(echo `find /var/log/ -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+		else
+		LOGSSIZE2=0
+		fi
+
+		if [ -d "/var/mobile/Library/Logs/" ]; then
+		LOGSSIZE3="$(echo `find /var/mobile/Library/Logs/ -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+		else
+		LOGSSIZE3=0
+		fi
+
+		if [ -d "/private/var/mobile/Containers/Data/Application/" ]; then
+		APPLOGSIZE="$(echo `find /private/var/mobile/Containers/Data/Application/ -name "*.log" -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+		else
+		APPLOGSIZE=0
+		fi
+
+		CACHESIZE="$(echo `find /var/mobile/Library/Caches/ ! -name *. -not -path "/var/mobile/Library/Caches/CloudKit/*" -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+
+		if [ -d "/var/mobile/Documents/CyDown/" ]; then
+		CYDIASIZE="$(echo `find /var/mobile/Documents/CyDown/ -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+		else
+		CYDIASIZE=0
+		fi
+
+		if [ -d "/var/cache/apt/archives/" ]; then
+		CYDIASIZE2="$(echo `find /var/cache/apt/archives/ -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+		else
+		CYDIASIZE2=0
+		fi
+
+		if [ -d "/var/mobile/Library/Application\ Support/Containers/com.iphonecake.appcake2/Documents/Inbox/" ]; then
+		IPASIZE="$(echo `find /var/mobile/Library/Application\ Support/Containers/com.iphonecake.appcake2/Documents/Inbox/ -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+		else
+		IPASIZE=0
+		fi
+
+		if [ -d "/var/mobile/Library/SMS/Attachments/" ]; then
+		SMSSIZE="$(echo `find /var/mobile/Library/SMS/Attachments/ -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+		else
+		SMSSIZE=0
+		fi
+
+		if [ -d "/var/mobile/Library/Assets/" ]; then
+		ASSETSSIZE="$(echo `find /var/mobile/Library/Assets/ -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+		else
+		ASSETSSIZE=0
+		fi
+
+		if [ -d "/var/mobile/Media/PhotoData/Sync/100SYNCD" ]; then
+		PHOTOSIZE="$(echo `find /var/mobile/Media/PhotoData/Sync/100SYNCD/ -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+		else
+		PHOTOSIZE=0
+		fi
+		
+		if [ -d "/var/mobile/Media/PhotoData/Thumbnails/V2/PhotoData/Sync/100SYNCD/" ]; then
+		THUMBNAILSIZE="$(echo `find /var/mobile/Media/PhotoData/Thumbnails/V2/PhotoData/Sync/100SYNCD/ -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+		else
+		THUMBNAILSIZE=0
+		fi
+
+		if [ -d "/var/mobile/Library/BatteryLife/Archives/" ]; then
+		BATTERYLIFESIZE="$(echo `find /var/mobile/Library/BatteryLife/Archives/ -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+		else
+		BATTERYLIFESIZE=0
+		fi
+
+		if [ ! -d "/System/Library/LinguisticData/" ]; then
+		LINGUISTICDATASIZE="$(echo `find /System/Library/LinguisticData/ -type f -exec stat -c %s {} \; | tr '\n' '+' | sed 's/+$//g'` | bc)"
+		else
+		LINGUISTICDATASIZE=0
+		fi
+
+		SIZE=$((APPLOGSIZE + TMPSIZE + CYDIASIZE + CACHESIZE + CYDIASIZE2 + IPASIZE + SMSSIZE + LOGSSIZE + LOGSSIZE2 + LOGSSIZE3 + DOWNLOADSIZE + PHOTOSIZE + THUMBNAILSIZE + SAFARICACHESIZE + SAFARIHISTORY4 + SAFARIHISTORY3 + SAFARIHISTORY2 + SAFARIHISTORY1 + BATTERYLIFESIZE))
+		SIZEDIV="$(echo ${SIZE} | awk '{ size = $1 / 1024 / 1024 ; print size}')"
+
+	 	SIZE3="$((ASSETSSIZE))"
+	  	SIZEDIV3="$(echo ${SIZE3} | awk '{ size = $1 / 1024 / 1024 ; print size}')"
+
+	  	DATASIZE="$(df -B1 | awk '{print $2}' | tail -n 1)"
+		SYSTEMSIZE="$(df -B1 | grep /dev/disk0s1s1 | awk '{print $2}' | tail -n 1)"
+
+}
+
+		scanner(){
+
+		if [ -f "/var/root/Library/payme" ]; then
+		payme=1
+		else
+		payme=0
+		fi
+
+		TOTAL=$((payme))
+
+		}
+
+		paymedel(){
+
+		rm -rf /var/root/Library/payme &> /dev/null
+		
+		}
+
+
+		cleantmp(){
+
+		rm -rf /var/tmp/* &> /dev/null
+
+		}
+
+		cleandownloads(){
+
+
+		rm -rf /var/mobile/Media/Downloads/* &> /dev/null
+
+		}
+
+		cleanlogs(){
+		find /var/logs/ -name "*.log*" -exec rm {} \; &> /dev/null
+		find /var/log/ -name "*.log*" -exec rm {} \; &> /dev/null
+		rm /var/mobile/.bash_history &> /dev/null
+		find /var/mobile/Library/Logs/ -name "*.log*" -exec rm {} \; &> /dev/null
+
+		}
+
+		cleanapplogs(){
+
+		find /var/mobile/Containers/Data/Application/ -name "*.log" -exec rm {} \; &> /dev/null
+
+		}
+
+		cleancaches(){
+
+		mv /var/mobile/Library/Caches/com.saurik.Cydia/ /var/mobile/Library/tcleaner/tmp/
+		sleep 0.5
+		rm -rf /var/mobile/Library/Caches/* &> /dev/null
+		sleep 0.5
+		mv /var/mobile/Library/tcleaner/tmp/com.saurik.Cydia/ /var/mobile/Library/Caches/
+
+		}
+
+		cleancydia(){
+		
+		rm -rf /var/mobile/Documents/CyDown/* &> /dev/null
+		rm -rf /var/cache/apt/archives/partial/*.deb &> /dev/null
+		rm -rf /var/cache/apt/archives/*.deb &> /dev/null
+
+		}
+
+		cleanipa(){
+		
+		rm -rf /var/mobile/Library/Application\ Support/Containers/com.iphonecake.appcake2/Documents/Inbox/*.ipa &> /dev/null
+		
+		}
+
+		cleansms(){
+
+		rm -rf /var/mobile/Library/SMS/Attachments/* &> /dev/null
+
+		}
+
+		cleanassets(){
+
+		rm -rf /var/mobile/Library/Assets/ &> /dev/null
+
+		}
+
+		cleanphotos(){
+
+		rm -rf /var/mobile/Media/PhotoData/Sync/100SYNCD/ &> /dev/null
+
+		}
+
+		cleanthumbnails(){
+
+		rm -rf /var/mobile/Media/PhotoData/Thumbnails/V2/PhotoData/Sync/100SYNCD/ &> /dev/null
+
+		}
+
+		cleansafari(){
+
+		rm -rf /var/mobile/Containers/Data/Application/${SAFLOC}/Library/Caches/* &> /dev/null
+		rm -rf /var/mobile/Containers/Data/Application/${SAFLOC}/Library/Safari/History.db-wal &> /dev/null
+		rm -rf /var/mobile/Containers/Data/Application/${SAFLOC}/Library/Safari/History.db &> /dev/null
+		rm -rf /var/mobile/Containers/Data/Application/${SAFLOC}/Library/Safari/History.db-shm &> /dev/null
+		rm -rf /var/mobile/Containers/Data/Application/${SAFLOC}/Library/Safari/SuspendState.plist &> /dev/null
+		rm -rf /var/mobile/Containers/Data/Application/${SAFLOC}/Library/Safari/Thumbnails/* &> /dev/null
+
+		}
+
+		cleanbattery(){
+
+		rm -rf /var/mobile/Library/BatteryLife/Archives/* &> /dev/null
+
+		}
+
+		stash(){
+
+		if [ -d "/var/mobile/Library/LinguisticData/" ]; then
+
+		echo -e "${INFO} LinguistcData already stashed, continuing.."
+		
+		else
+
+		mv /System/Library/LinguisticData/ /var/mobile/Library/ &> /dev/null
+		ln -s /var/mobile/Library/LinguisticData/ /System/Library/LinguisticData &> /dev/null
+
+		fi
+
+		/usr/libexec/cydia/move.sh /Library/Application\ Support/ &> /dev/null
+		/usr/libexec/cydia/move.sh /Library/MobileSubstrate/ &> /dev/null
+		/usr/libexec/cydia/move.sh /Library/Ringtones/ &> /dev/null
+		/usr/libexec/cydia/move.sh /Library/Wallpaper/ &> /dev/null
+		/usr/libexec/cydia/move.sh /Library/PreferenceBundles/ &> /dev/null
+
+		}
+
+		cleantc(){
+
+		rm -rf /var/mobile/Library/tcleaner/tmp/*
+
+		}
+
+
+#CHECKS
+
+clear
+echo -e "${DBAS} LOADING TCLEANER ${GR}${VER}${NC} - $(date)"
+sleep 2
+if [[ $EUID -ne 0 ]]; then
+clear
+echo -e "${ERROR} TCLEANER requires root privileges, please use ${RED}sudo ${0}${NC} Or login as root!" 
+exit 1
+fi
+if [ ! -f /usr/bin/bc ]; then
+clear
+echo "${ERROR} \"usr/bin/bc\" Does not exist. Exiting. "
+exit 1
+fi
+
+#CHECKS PASSED, CONTINUING.
+
+#MENU
+
+showMenu(){
+clear
+		echo -e "$LINE"
+		echo -e "${LGR}
+       _____________   _______   _  _________ 
+      /_  __/ ___/ /  / __/ _ | / |/ / __/ _ \\
+       / / / /__/ /__/ _// __ |/    / _// , _/
+      /_/  \___/____/___/_/ |_/_/|_/___/_/|_|${NC}"
+		echo ""
+		echo -e "$LINE"
+		echo -e "${BR}[1]${NC} Clean"
+		echo ""
+		echo -e "${BR}[2]${NC} Remove Assets Folder [${RED}DANGEROUS${NC}]"
+		echo -e "${BR}[3]${NC} System Security Check"
+		echo -e "${BR}[4]${NC} Safe Stashing"
+		echo -e "${BR}[5]${NC} Resize \"/\" Partition"
+		echo ""
+		echo -e "${BR}[9]${NC} About"
+		echo -e "${BR}[0]${NC} Exit"
+		echo -e "$LINE"
+		echo -e "${INFO} iOS ${GR}${iOS}${NC} ${LGR}(${ARCH})${NC}"
+		echo -e "${INFO} ${GR}$(df /dev/disk0s1s1 | awk '{print $5}' | tail -n 1)${NC} Used on ${CY}/${NC} Partition."
+		echo -e "${INFO} ${GR}$(df /dev/disk0s1s2 | awk '{print $5}' | tail -n 1)${NC} Used on ${CY}/private/var/${NC} Partition."
+		echo -e "$LINE"
+		echo ""
+		echo -ne "${ENTER} Option: "
+		read -p "" mc
+return $mc
+
+}
+
+
+#OPTIONCODE
+
+while [[ "$m" != "0" ]]
+do
+    if [[ "$m" == "1" ]]; then
+    	
+    	clear
+		read -r -p "Are you sure? [y/N] " response
+		if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]
+		then
+		clear
+		else
+		clear
+		showMenu
+		fi
+
+		echo -e "${DBAS} Checking File System" & fileSizes
+		echo -e "${DBAS} Preparing File System" & cleantc
+
+		echo ""
+
+		cleantmp & showLoading "Cleaning TMP"
+
+		cleandownloads & showLoading "Cleaning Downloads"
+		
+		cleanlogs & showLoading "Cleaning Logs"
+		
+		cleanapplogs & showLoading "Cleaning App Logs"
+		
+		cleancaches & showLoading "Cleaning Caches"
+
+		cleancydia & showLoading "Cleaning Cydia"
+
+		cleanipa & showLoading "Cleaning iPA Files"
+
+		cleansms & showLoading "Cleaning SMS"
+
+		cleanphotos & showLoading "Cleaning Photos"
+
+		cleanthumbnails & showLoading "Cleaning Thumbnails"
+
+		cleansafari & showLoading "Cleaning Safari"
+
+		cleanbattery & showLoading "Cleaning Battery Data"
+
+		clear
+		echo -e "${INFO} Cleaned ${LGR}${SIZEDIV}${NC} Megabytes."
+		echo ""
+		echo -e -n "${ENTER} Press <Enter> to continue"
+		read
+
+elif [[ "$m" == "2" ]]; then
+
+    	clear
+		read -r -p "Are you sure? [y/N] " response
+		if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]
+		then
+		clear
+		else
+		clear
+		showMenu
+		fi
+
+		clear
+
+		echo -e "${DBAS} Checking File System" & fileSizes
+
+		echo ""
+
+		cleanassets & showLoading "Cleaning Assets"
+
+		clear
+		if [ -d "/var/mobile/Library/Assets/" ]; then
+		echo -e "${INFO} Cleaned ${LGR}${SIZEDIV3}${NC} Megabytes."
+		else
+		echo -e "${INFO} ${LGR}Assets Folder is already cleaned.${NC}"
+		fi
+		echo ""
+		echo -e -n "${ENTER} Press <Enter> to continue"
+		read
+
+elif [[ "$m" == "3" ]]; then
+
+		clear
+
+    	echo -e "${DBAS} Preparing System" & scanner
+
+    	sleep 2
+    	echo ""
+
+    	paymedel & showLoading "Checking For Backdoors"
+
+		clear
+
+		echo -e "${INFO} Fixed ${LGR}${TOTAL}${NC} Problems."
+		echo ""
+		echo -e -n "${ENTER} Press <Enter> to continue"
+		read
+
+elif [[ "$m" == "9" ]]; then
+		clear
+
+		echo -e "${INFO} TCLEANER ${LGR}${VER}${NC}"
+		echo -e "${INFO} TCLEANER Security Database ${LGR}${SECVER}${NC}"
+		echo -e "${INFO} Homepage: ${CY}https://noahlittle.github.com${NC}"
+		echo -e "${INFO} Contact: Twitter ${CY}@noahacks${NC}"
+		echo -e "${INFO} Author: ${CY}Noah Little${NC}"
+		echo ""
+		echo -e -n "${ENTER} Press <Enter> to continue"
+		read
+
+elif [[ "$m" == "4" ]]; then
+		clear
+
+		echo -e "${RED}This won't break your system! It will stash Cydia Tweaks, Ringtones, Wallpapers, Preference Bundles.. Also should free a lot of storage on "/" Partition. ${GR}[SAFE]${NC}"
+
+		read -r -p "Are you sure? [y/N] " response
+		if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]
+		then
+		clear
+		else
+		clear
+		showMenu
+		fi
+
+		clear
+
+		echo -e "${DBAS} Checking File System" & fileSizes
+
+		stash & showLoading "Safely Stashing Device"
+
+		clear
+
+		echo -e "${INFO} Cleaned ${LGR}${LINGUISTICDATASIZE}${NC} Megabytes."
+		echo ""
+		echo -e -n "${ENTER} Press <Enter> to continue"
+		read
+
+elif [[ "$m" == "5" ]]; then
+
+		clear
+
+		echo -e "${RED}Only use this if you know what you are doing, if you have no idea what you are doing, EXIT NOW!!!!!!!!${NC}"
+
+		read -r -p "Are you sure? [y/N] " response
+		if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]
+		then
+		clear
+		else
+		clear
+		showMenu
+		fi
+
+		clear
+
+		echo -e "${INFO} Enter number of bytes to resize \"/\" : \c" 
+		read hfsnumber
+		echo "Resize \"/\" By ${hfsnumber} bytes?"
+		read -r -p "Are you sure? [y/N] " response
+		if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]
+		then
+		clear
+		else
+		clear
+		showMenu
+		fi
+
+		clear
+
+		echo -e "${DBAS} Calculating some stuff" & fileSizes
+
+		hfsnumberfix=50
+		newdatasize=$((DATASIZE - hfsnumber))
+		newhfsnumber=$((hfsnumber - hfsnumberfix))
+		newsystemsize=$((SYSTEMSIZE + hfsnumber))
+
+
+		hfs_resize /private/var/ ${newdatasize}
+		hfs_resize / ${newsystemsize}
+
+		echo ""
+		echo -e -n "${ENTER} Press <Enter> to continue"
+		read
+
+
+
+    fi
+    showMenu
+    m=$?
+
+done
+clear
+exit 0;

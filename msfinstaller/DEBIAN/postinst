@@ -1,0 +1,19 @@
+#!/bin/bash
+
+echo "[*] Starting MSF INSTALLER助手"
+sleep 1
+
+echo "[**] Applying Patches"
+sleep 1
+
+chmod +x /usr/bin/msfinstaller
+
+echo "[*] MSF INSTALLER Patches Applied"
+
+echo "[*] Thank you for installing Metasploit Installer"
+
+echo "[*] Follow me on Twitter @noahacks"
+
+echo "[*] Type in Terminal: msfinstaller"
+
+exit 0;

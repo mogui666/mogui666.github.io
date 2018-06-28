@@ -1,0 +1,10 @@
+Package: com.noahlit.tcleaner
+Name: TCLEANER
+Depends: bc, bigbosshackertools
+Version: 1.3.2
+Architecture: iphoneos-arm
+Description: TC助手CLI  软件包. Sofisticated but simple cleaning utility.
+Depiction: https://mogui666.github.io/depic/TCLEANER
+Maintainer: mogui666 <njl02@outlook.com>
+Author: mogui666 <njl02@outlook.com>
+Section: Utilities
