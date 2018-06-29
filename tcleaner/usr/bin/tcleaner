@@ -4,8 +4,7 @@
 #FOLLOW ON TWITTER @noahacks
 
 #modifying this could put your device at risk!
-
-VER="v1.3.3"
+VER="v1.4"
 SECVER="v1.0"
 ARCH="$(uname -p)"
 iOS="$(sw_vers | grep ProductVersion: | awk '{print $2}')"
@@ -382,7 +381,6 @@ clear
 		echo -e "${BR}[2]${NC} Remove Assets Folder [${RED}DANGEROUS${NC}]"
 		echo -e "${BR}[3]${NC} System Security Check"
 		echo -e "${BR}[4]${NC} Safe Stashing"
-		echo -e "${BR}[5]${NC} Resize \"/\" Partition"
 		echo ""
 		echo -e "${BR}[9]${NC} About"
 		echo -e "${BR}[0]${NC} Exit"
@@ -537,55 +535,8 @@ elif [[ "$m" == "4" ]]; then
 		echo -e -n "${ENTER} Press <Enter> to continue"
 		read
 
-elif [[ "$m" == "5" ]]; then
 
-		clear
-
-		echo -e "${RED}Only use this if you know what you are doing, if you have no idea what you are doing, EXIT NOW!!!!!!!!${NC}"
-
-		read -r -p "Are you sure? [y/N] " response
-		if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]
-		then
-		clear
-		else
-		clear
-		showMenu
-		fi
-
-		clear
-
-		echo -e "${INFO} Enter number of bytes to resize \"/\" : \c" 
-		read hfsnumber
-		echo "Resize \"/\" By ${hfsnumber} bytes?"
-		read -r -p "Are you sure? [y/N] " response
-		if [[ "$response" =~ ^([yY][eE][sS]|[yY])+$ ]]
-		then
-		clear
-		else
-		clear
-		showMenu
-		fi
-
-		clear
-
-		echo -e "${DBAS} Calculating some stuff" & fileSizes
-
-		hfsnumberfix=50
-		newdatasize=$((DATASIZE - hfsnumber))
-		newhfsnumber=$((hfsnumber - hfsnumberfix))
-		newsystemsize=$((SYSTEMSIZE + hfsnumber))
-
-
-		hfs_resize /private/var/ ${newdatasize}
-		hfs_resize / ${newsystemsize}
-
-		echo ""
-		echo -e -n "${ENTER} Press <Enter> to continue"
-		read
-
-
-
-    fi
+fi
     showMenu
     m=$?
 

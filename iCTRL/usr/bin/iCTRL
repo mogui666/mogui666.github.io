@@ -3,7 +3,7 @@
 #CREATED BY NOAH LITTLE
 #FOLLOW ON TWITTER @noahacks
 
-VER="v2.6"
+VER="v2.7"
 ARCH="$(uname -p)"
 LINE="$(eval printf %.1s '-{1..'"${COLUMNS:-$(tput cols)}"\}; echo)"
 
@@ -88,7 +88,7 @@ if [[ $ARCH = "arm64" ]]
 	then
 
 	sleep 1
-	echo -e "${ERROR}${RED} ARM64 DETECTED, FUNCTIONS LIMITED!${NC}"
+	echo -e "${ERROR}${RED} ARM64 DETECTED, FUNCTIONS MAY BE LIMITED!${NC}"
 	sleep 3
 
 else
@@ -136,6 +136,15 @@ checks(){
 	if [ -f /var/mobile/Downloads/setuptools-0.6c11-py2.7.egg* ]; then
 	rm /var/mobile/Downloads/setuptools-0.6c11-py2.7.egg* &> /dev/null
 	fi
+
+}
+
+signing(){
+
+	ldid -S /usr/lib/python2.7/lib-dynload/*.so &> /dev/null
+	ldid -S /usr/local/lib/libcrypto.1.0.0.dylib &> /dev/null
+	ldid -S /usr/local/lib/libssl.1.0.0.dylib &> /dev/null
+	ldid -S /usr/lib/libpython2.7.dylib &> /dev/null
 
 }
 
@@ -302,6 +311,8 @@ elif [[ "$m" == "99" ]]; then
 	sleep 1
 
     checks & showLoading "Running System Checks"
+
+    signing & showLoading "Signing Binaries"
 
 	dlsut & showLoading "Downloading Setup Tools"
 	

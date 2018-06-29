@@ -10,5 +10,5 @@ git init
 git remote add origin https://github.com/noahlittle/noahlittle.github.io.git
 git add --all
 git commit -m "$message"
-git push --force origin master
+git push origin master
 
