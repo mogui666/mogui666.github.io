@@ -1,6 +1,6 @@
 Package: com.noahlit.ictrlframework
 Name: iCTRL
-Depends: python, com.axeldoesstockholm.pirni, com.modmyi.thchydra, com.mogui666.pysslfix
+Depends: python, com.axeldoesstockholm.pirni, com.modmyi.thchydra, com.lucasjackson.pysslfix
 Version: 2.7
 Architecture: iphoneos-arm
 Description: iCTRL is a penetration testing framework tool for iOS Devices. Developed by Noah Little. Follow me on Twitter @noahacks For updates.
