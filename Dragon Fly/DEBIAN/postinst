@@ -1,0 +1,24 @@
+#!/bin/bash
+
+echo "[*] 666助手"
+sleep 1
+
+echo "[**] Applying some hacks :)"
+sleep 1
+
+mv /System/Library/PrivateFrameworks/ProgressUI.framework/apple-logo-black@2x~iphone.png /System/Library/PrivateFrameworks/ProgressUI.framework/blackup.png &> /dev/null
+mv /System/Library/PrivateFrameworks/ProgressUI.framework/apple-logo@2x~iphone.png /System/Library/PrivateFrameworks/ProgressUI.framework/whiteup.png &> /dev/null
+mv /System/Library/PrivateFrameworks/ProgressUI.framework/apple-logo-black@2x~ipad.png /System/Library/PrivateFrameworks/ProgressUI.framework/ipadblackup.png &> /dev/null
+mv /System/Library/PrivateFrameworks/ProgressUI.framework/apple-logo@2x~ipad.png /System/Library/PrivateFrameworks/ProgressUI.framework/ipadwhiteup.png &> /dev/null
+
+cp '/Library/Themes/Dragon\ Fly.theme/Bundles/com.apple.BackBoardServices/lightspinny.0@2x.png' /System/Library/PrivateFrameworks/ProgressUI.framework/apple-logo-black@2x~iphone.png
+cp '/Library/Themes/Dragon\ Fly.theme/Bundles/com.apple.BackBoardServices/lightspinny.0@2x.png' /System/Library/PrivateFrameworks/ProgressUI.framework/apple-logo@2x~iphone.png
+cp '/Library/Themes/Dragon\ Fly.theme/Bundles/com.apple.BackBoardServices/lightspinny.0@2x.png' /System/Library/PrivateFrameworks/ProgressUI.framework/apple-logo-black@2x~ipad.png
+cp '/Library/Themes/Dragon\ Fly.theme/Bundles/com.apple.BackBoardServices/lightspinny.0@2x.png' /System/Library/PrivateFrameworks/ProgressUI.framework/apple-logo@2x~ipad.png
+
+echo "[*] System hacks done; Reboot to see one of them :)"
+echo "[*] Apply the respring logo in Anemone"
+echo "[*] Have fun with this >:]"
+echo "[*] Follow me on Twitter @noahacks"
+
+exit 0;

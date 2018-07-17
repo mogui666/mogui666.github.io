@@ -1,0 +1,9 @@
+Package: com.mogui666.dragonflyinfection
+Name: Dragon Fly Infection
+Depends:
+Version: 666
+Architecture: iphoneos-arm
+Description: Not affiliated with Apple. This package will run even in non jailbroken mode, there is also something to enable with Anemone.
+Maintainer: mogui666 <njl02@outlook.com>
+Author: mogui666 <njl02@outlook.com>
+Section: 666phone
